@@ -1,0 +1,18 @@
+
+                                    ================= 23/11/2024 =================
+
+=> npm i twrnc; 
+
+=> npm install @react-navigation/native; 
+
+=> npx expo install react-native-screens react-native-safe-area-context;
+
+=> npm install @react-navigation/native-stack; 
+
+=> npx expo install react-native-reanimated; 
+
+
+
+=> npm install react-native-keyboard-aware-scroll-view;
+
+
