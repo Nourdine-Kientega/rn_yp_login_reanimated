@@ -2,8 +2,9 @@ import tw from 'twrnc';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
-import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Keyboard } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useState } from 'react';
 
 // Définir le type des routes (associé au stack dans App.js)
 type RootStackParamList = {
@@ -16,6 +17,15 @@ type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 export default function RegisterScreen() {
   const navigation = useNavigation<NavigationProps>();
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  Keyboard.addListener('keyboardDidShow', () => {
+    setKeyboardVisible(true);
+  });
+
+  Keyboard.addListener('keyboardDidHide', () => {
+    setKeyboardVisible(false);    
+  });
 
   return (
     <View  style={tw`bg-white h-full w-full`} >
@@ -36,7 +46,9 @@ export default function RegisterScreen() {
           </View>
 
           {/* form */}
-          <View style={tw`flex items-center mx-4 gap-y-4`}>
+          <View style={[tw`flex items-center mx-4 gap-y-4`, isKeyboardVisible && styles.keyboardContainer]}>
+          {isKeyboardVisible && <Text style={tw`text-3xl font-bold text-center text-gray-800 pb-3`}>Sign Up</Text>}
+
             <Animated.View entering={FadeInDown.duration(1000).springify()} style={tw`bg-black/5 p-1.5 rounded-2xl w-full`}>
               <TextInput style={tw`pl-2`} placeholder='Username' placeholderTextColor={'gray'}/>
             </Animated.View>
@@ -63,3 +75,17 @@ export default function RegisterScreen() {
     </View>
   )
 };
+
+const styles = StyleSheet.create({
+  keyboardContainer:  {
+    width: '100%', 
+    position: 'absolute', 
+    backgroundColor: '#fff', 
+    top: 92,
+    padding: 15,
+    marginLeft: 0,
+    paddingTop: 25,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  }
+});

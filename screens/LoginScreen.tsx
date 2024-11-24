@@ -1,9 +1,10 @@
-import tw from 'twrnc';
+import tw, { style } from 'twrnc';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
-import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, Keyboard, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useState } from 'react';
 
 // Définir le type des routes (associé au stack dans App.js)
 type RootStackParamList = {
@@ -16,6 +17,15 @@ type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 export default function LoginScreen() {
   const navigation = useNavigation<NavigationProps>();
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  Keyboard.addListener('keyboardDidShow', () => {
+    setKeyboardVisible(true);
+  });
+
+  Keyboard.addListener('keyboardDidHide', () => {
+    setKeyboardVisible(false);    
+  });
 
   return (
     <View  style={tw`bg-white h-full w-full`} >
@@ -36,27 +46,43 @@ export default function LoginScreen() {
           </View>
 
           {/* form */}
-          <View style={tw`flex items-center mx-4 gap-y-4`}>
-            <Animated.View entering={FadeInDown.duration(1000).springify()} style={tw`bg-black/5 p-1.5 rounded-2xl w-full`}>
-              <TextInput style={tw`pl-2`} placeholder='Email' placeholderTextColor={'gray'}/>
-            </Animated.View>
-            <Animated.View entering={FadeInDown.delay(200).duration(1000).springify()} style={tw`bg-black/5 p-1.5 rounded-2xl w-full mb-3`}>
-              <TextInput style={tw`pl-2`} placeholder='Password' placeholderTextColor={'gray'} secureTextEntry/>
-            </Animated.View>
-            <Animated.View entering={FadeInDown.delay(400).duration(1000).springify()} style={tw`w-full`}>
-              <TouchableOpacity style={tw`w-full bg-sky-400 p-3 rounded-2xl mb-3`}>
-                <Text style={tw`text-xl font-bold text-white text-center`}>Login</Text>
-              </TouchableOpacity>
-            </Animated.View>
-            <Animated.View entering={FadeInDown.delay(600).duration(1000).springify()} style={tw`flex-row justify-center`}>
-              <Text>Don't have an acount ? </Text>
-              <TouchableOpacity onPress={() => navigation.push('Register')}>
-                <Text style={tw`text-sky-600`}>SignUp</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          </View>
+            <View style={[tw`flex items-center mx-4 gap-y-4`, isKeyboardVisible && styles.keyboardContainer]}>
+              {isKeyboardVisible && <Text style={tw`text-3xl font-bold text-center text-gray-800 pb-3`}>Login</Text>}
+
+              <Animated.View entering={FadeInDown.duration(1000).springify()} style={tw`bg-black/5 p-1.5 rounded-2xl w-full`}>
+                <TextInput style={tw`pl-2`} placeholder='Email' placeholderTextColor={'gray'}/>
+              </Animated.View>
+              <Animated.View entering={FadeInDown.delay(200).duration(1000).springify()} style={tw`bg-black/5 p-1.5 rounded-2xl w-full mb-3`}>
+                <TextInput style={tw`pl-2`} placeholder='Password' placeholderTextColor={'gray'} secureTextEntry/>
+              </Animated.View>
+              <Animated.View entering={FadeInDown.delay(400).duration(1000).springify()} style={tw`w-full`}>
+                <TouchableOpacity style={tw`w-full bg-sky-400 p-3 rounded-2xl mb-3`}>
+                  <Text style={tw`text-xl font-bold text-white text-center`}>Login</Text>
+                </TouchableOpacity>
+              </Animated.View>
+              <Animated.View entering={FadeInDown.delay(600).duration(1000).springify()} style={tw`flex-row justify-center`}>
+                <Text>Don't have an acount ? </Text>
+                <TouchableOpacity onPress={() => navigation.push('Register')}>
+                  <Text style={tw`text-sky-600`}>SignUp</Text>
+                </TouchableOpacity>
+              </Animated.View>
+            </View>
 
         </View>
     </View>
   )
 };
+
+const styles = StyleSheet.create({
+  keyboardContainer:  {
+    width: '100%', 
+    position: 'absolute', 
+    backgroundColor: '#fff', 
+    top: 155,
+    padding: 15,
+    marginLeft: 0,
+    paddingTop: 25,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  }
+});
